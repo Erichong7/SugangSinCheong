@@ -1,14 +1,17 @@
+import java.awt.FlowLayout;
+import java.awt.Frame;
+import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-public class LoginPanel extends JPanel {
+public class LoginDialog extends JDialog {
 
 	/**
 	 * 
@@ -23,7 +26,15 @@ public class LoginPanel extends JPanel {
 	private JTextField txtPw;
 	private JButton loginButton;
 
-	public LoginPanel() {
+	public LoginDialog(Frame parent) {
+		super(parent);
+
+		setVisible(true);
+		setSize(230, 130);
+
+		LayoutManager layoutManager = new FlowLayout();
+		setLayout(layoutManager);
+
 		idLabel = new JLabel("  아이디 : ");
 		pwLabel = new JLabel("비밀번호 : ");
 		txtId = new JTextField(10);
