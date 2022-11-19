@@ -1,11 +1,12 @@
+package ValueObject;
 
-public class VLogin {
+public class VAccount {
 
-	private String id;
-	private String password;
-	private String name;
+	private String id = "";
+	private String password = "";
+	private String name = "";
 
-	public VLogin() {
+	public VAccount() {
 	}
 
 	public String getId() {

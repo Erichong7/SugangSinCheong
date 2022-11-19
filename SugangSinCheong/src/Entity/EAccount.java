@@ -1,10 +1,13 @@
+package Entity;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
+import ValueObject.VAccount;
+
 public class EAccount {
 
-	private VLogin vLogin = new VLogin();
+	private VAccount vLogin = new VAccount();
 	private String id;
 	private String password;
 	private String name;
@@ -13,9 +16,9 @@ public class EAccount {
 	public EAccount() {
 	}
 
-	public VLogin getLogin(String id, String password) {
+	public VAccount getLogin(String id, String password) {
 		try {
-			File file = new File("data/account");
+			File file = new File("account/account");
 			Scanner scanner = new Scanner(file);
 			// file read
 			boolean found = true;
