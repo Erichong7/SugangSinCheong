@@ -1,7 +1,6 @@
 package View;
 
 import java.awt.Container;
-import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -16,6 +15,7 @@ import javax.swing.JTextField;
 
 import Service.SLogin;
 import ValueObject.VAccount;
+import View.Main.ActionHandler;
 
 public class PLoginDialog extends JDialog {
 
@@ -31,14 +31,14 @@ public class PLoginDialog extends JDialog {
 	private JTextField txtId;
 	private JTextField txtPw;
 	private JButton loginButton;
+	private JButton cancelButton;
 
-	public PLoginDialog(Frame parent) {
-		super(parent);
+	public PLoginDialog(ActionHandler actionHandler) {
 
 		setSize(230, 140);
 		setResizable(false);
 		setTitle("로그인");
-		setLocationRelativeTo(parent);
+		setLocationRelativeTo(null);
 		setModal(true);
 
 		Container container = getContentPane();
@@ -58,38 +58,47 @@ public class PLoginDialog extends JDialog {
 
 		JPanel line3 = new JPanel();
 		loginButton = new JButton("로그인");
+		cancelButton = new JButton("취소");
+
+		cancelButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
+
 		line3.add(loginButton);
+		line3.add(cancelButton);
 
 		container.add(line1);
 		container.add(line2);
 		container.add(line3);
 
-		loginButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String id = txtId.getText();
-				String password = txtPw.getText();
+		loginButton.addActionListener(actionHandler);
 
-				sLogin = new SLogin();
-				VAccount vAccount = sLogin.getLogin(id, password);
+		getRootPane().setDefaultButton(loginButton);
 
-				if (vAccount.getId().equals(id) && vAccount.getPassword().equals(password)) {
-					String message = "환영합니다, " + vAccount.getName() + "님.";
-					JOptionPane.showMessageDialog(null, message);
+	}
 
-					PMainFrame pMainFrame = (PMainFrame) getParent();
-					pMainFrame.setVAccout(vAccount);
+	VAccount login() {
+		String id = txtId.getText();
+		String password = txtPw.getText();
 
-					dispose();
-				} else {
-					JOptionPane.showMessageDialog(null, "로그인 실패");
-				}
+		sLogin = new SLogin();
+		VAccount vAccount = sLogin.getLogin(id, password);
 
-			}
+		if (vAccount.getId().equals(id) && vAccount.getPassword().equals(password)) {
+			dispose();
+			String message = "환영합니다, " + vAccount.getName() + "님.";
+			JOptionPane.showMessageDialog(null, message);
 
-		});
-
-		setVisible(true);
-
+			return vAccount;
+		} else {
+			dispose();
+			JOptionPane.showMessageDialog(null, "로그인 실패");
+			return null;
+		}
 	}
 
 }

@@ -2,9 +2,9 @@ package ValueObject;
 
 public class VAccount {
 
-	private String id = "";
-	private String password = "";
-	private String name = "";
+	private String id;
+	private String password;
+	private String name;
 
 	public VAccount() {
 	}

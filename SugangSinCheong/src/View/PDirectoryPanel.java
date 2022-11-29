@@ -13,7 +13,6 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 import Service.SDirectory;
-import Service.SLecture;
 import ValueObject.VDirectory;
 import ValueObject.VLecture;
 
@@ -24,7 +23,7 @@ public class PDirectoryPanel extends JPanel {
 	private PDirectory campusTable;
 	private PDirectory collegeTable;
 	private PDirectory departmentTable;
-	private PLecture lectureTable;
+	private PLectureTable lectureTable;
 
 	private String fileName;
 
@@ -42,19 +41,19 @@ public class PDirectoryPanel extends JPanel {
 		campusTable.getSelectionModel().addListSelectionListener(listSelectionHandler);
 		JScrollPane scrollPane = new JScrollPane(campusTable);
 
-		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scrollPane.setViewportView(campusTable);
 		subPanel1.add(scrollPane);
 
 		scrollPane = new JScrollPane();
-		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		collegeTable = new PDirectory(); // collegeTable
 		collegeTable.getSelectionModel().addListSelectionListener(listSelectionHandler);
 		scrollPane.setViewportView(collegeTable);
 		subPanel1.add(scrollPane);
 
 		scrollPane = new JScrollPane();
-		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		departmentTable = new PDirectory(); // departmentTable
 		departmentTable.getSelectionModel().addListSelectionListener(listSelectionHandler);
 		scrollPane.setViewportView(departmentTable);
@@ -67,8 +66,8 @@ public class PDirectoryPanel extends JPanel {
 		subPanel2.setLayout(layoutManager);
 
 		scrollPane = new JScrollPane();
-		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		lectureTable = new PLecture();
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		lectureTable = new PLectureTable();
 		scrollPane.setViewportView(lectureTable);
 		subPanel2.add(scrollPane);
 
@@ -145,42 +144,30 @@ public class PDirectoryPanel extends JPanel {
 			setRowSelectionInterval(0, 0);
 			return vDirectories.get(0).getFileName();
 		}
-	}
-
-	private class PLecture extends JTable {
-		private static final long serialVersionUID = 1L;
-
-		private DefaultTableModel tableModel;
-
-		public PLecture() {
-
-			Vector<String> header = new Vector<String>();
-			header.add("강좌 번호");
-			header.add("과목");
-			header.add("교수");
-			header.add("학점");
-			header.add("시간");
-			tableModel = new DefaultTableModel(header, 0);
-			setModel(tableModel);
-
-		}
-
-		public void setData(String fileName) {
-			SLecture sLecture = new SLecture();
-			Vector<VLecture> vLectures = sLecture.getLectures(fileName);
-
-			tableModel.setNumRows(0);
-			for (VLecture vLecture : vLectures) {
-				Vector<String> row = new Vector<String>();
-				row.add(vLecture.getId());
-				row.add(vLecture.getName());
-				row.add(vLecture.getProfessor());
-				row.add(vLecture.getCredit());
-				row.add(vLecture.getTime());
-
-				tableModel.addRow(row);
-			}
-		}
 
 	}
+
+	public VLecture getSelectedLectures() {
+
+		if (lectureTable.getRowCount() == 0) {
+			return null;
+		}
+
+		Vector<VLecture> lectures = lectureTable.vLectures;
+		int selectedLectureRow = lectureTable.getSelectedRow();
+		VLecture selectedLecture = lectures.get(selectedLectureRow);
+		lectures.remove(selectedLectureRow);
+		((DefaultTableModel) lectureTable.getModel()).removeRow(selectedLectureRow);
+
+		if (lectureTable.getRowCount() != 0) {
+			lectureTable.setRowSelectionInterval(0, 0);
+		}
+
+		return selectedLecture;
+	}
+
+	public void addLectures(VLecture lectures) {
+
+	}
+
 }

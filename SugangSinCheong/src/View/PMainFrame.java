@@ -5,6 +5,7 @@ import java.awt.LayoutManager;
 
 import javax.swing.JFrame;
 
+import Global.Constants;
 import ValueObject.VAccount;
 
 public class PMainFrame extends JFrame {
@@ -15,23 +16,22 @@ public class PMainFrame extends JFrame {
 
 	private VAccount vAccount;
 
-	public void setVAccout(VAccount vAccount) {
+	public void setVAccount(VAccount vAccount) {
 		this.vAccount = vAccount;
 	}
 
-	public PMainFrame() {
+	public PMainFrame(VAccount vAccount) {
+
+		setVAccount(vAccount);
 
 		// attributes
-		setSize(1000, 600);
+		setSize(Constants.CMainFrame.WIDTH, Constants.CMainFrame.HIGHT);
 		setResizable(true);
 		setTitle("수강 신청");
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		// components
-		// vAccount setting
-		new PLoginDialog(this);
-
 		LayoutManager layoutManager = new BorderLayout();
 		setLayout(layoutManager);
 
@@ -41,8 +41,10 @@ public class PMainFrame extends JFrame {
 		sugangsincheongPanel = new PSugangsincheongPanel();
 		add(sugangsincheongPanel, BorderLayout.CENTER);
 
-		setVisible(true);
+	}
 
+	public void initialize() {
+		setVisible(true);
 	}
 
 }
