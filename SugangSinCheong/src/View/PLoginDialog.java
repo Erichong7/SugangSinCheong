@@ -3,6 +3,8 @@ package View;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -13,18 +15,17 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import Global.Locale;
 import Service.SLogin;
 import ValueObject.VAccount;
 import View.Main.ActionHandler;
 
 public class PLoginDialog extends JDialog {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	private SLogin sLogin;
+	private PMembership membership;
+	private PFindDialog findDialog;
 
 	private JLabel idLabel;
 	private JLabel pwLabel;
@@ -32,50 +33,72 @@ public class PLoginDialog extends JDialog {
 	private JTextField txtPw;
 	private JButton loginButton;
 	private JButton cancelButton;
+	private JButton membershipButton;
+	private JButton findButton;
 
 	public PLoginDialog(ActionHandler actionHandler) {
 
-		setSize(230, 140);
+		setSize(300, 200);
 		setResizable(false);
 		setTitle("로그인");
 		setLocationRelativeTo(null);
-		setModal(true);
 
 		Container container = getContentPane();
 		container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
 
 		JPanel line1 = new JPanel();
-		idLabel = new JLabel("  아이디 : ");
+		idLabel = new JLabel(Locale.LoginDialog.LOGIN);
 		txtId = new JTextField(10);
 		line1.add(idLabel);
 		line1.add(txtId);
 
 		JPanel line2 = new JPanel();
-		pwLabel = new JLabel("비밀번호 : ");
+		pwLabel = new JLabel(Locale.LoginDialog.PASSWORD);
 		txtPw = new JPasswordField(10);
 		line2.add(pwLabel);
 		line2.add(txtPw);
 
 		JPanel line3 = new JPanel();
-		loginButton = new JButton("로그인");
-		cancelButton = new JButton("취소");
+		membershipButton = new JButton(Locale.LoginDialog.HWAEWONGAIM_BUTTONTEXT);
+		findButton = new JButton(Locale.LoginDialog.CHATGI_BUTTONTEXT);
+		line3.add(membershipButton);
+		line3.add(findButton);
 
-		cancelButton.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
-			}
-		});
-
-		line3.add(loginButton);
-		line3.add(cancelButton);
+		JPanel line4 = new JPanel();
+		loginButton = new JButton(Locale.LoginDialog.LOGIN_BUTTONTEXT);
+		cancelButton = new JButton(Locale.LoginDialog.CANCEL_BUTTONTEXT);
+		line4.add(loginButton);
+		line4.add(cancelButton);
 
 		container.add(line1);
 		container.add(line2);
 		container.add(line3);
+		container.add(line4);
 
 		loginButton.addActionListener(actionHandler);
+		cancelButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
+		membershipButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				membership = new PMembership();
+				membership.initialize();
+			}
+		});
+		findButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				findDialog = new PFindDialog();
+				findDialog.initialize();
+			}
+		});
+
+		this.addWindowListener(new WindowAdapter() { // "x" on Close
+			public void windowClosing(WindowEvent e) {
+				System.exit(0);
+			}
+		});
 
 		getRootPane().setDefaultButton(loginButton);
 
@@ -90,15 +113,19 @@ public class PLoginDialog extends JDialog {
 
 		if (vAccount.getId().equals(id) && vAccount.getPassword().equals(password)) {
 			dispose();
-			String message = "환영합니다, " + vAccount.getName() + "님.";
+			String message = Locale.LoginDialog.HWANYOUNG + vAccount.getName() + Locale.LoginDialog.NIM;
 			JOptionPane.showMessageDialog(null, message);
 
 			return vAccount;
 		} else {
 			dispose();
-			JOptionPane.showMessageDialog(null, "로그인 실패");
+			JOptionPane.showMessageDialog(null, Locale.LoginDialog.SHILPAE);
 			return null;
 		}
+	}
+
+	public void initialize() {
+		setVisible(true);
 	}
 
 }

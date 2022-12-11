@@ -8,21 +8,24 @@ import ValueObject.VAccount;
 public class Main {
 
 	private PLoginDialog loginDialog;
+	private PMainFrame mainFrame;
+	private ActionHandler actionHandler;
+
+	private VAccount vAccount;
 
 	public Main() {
 	}
 
 	private void initialize() {
-		ActionHandler actionHandler = new ActionHandler();
-
+		actionHandler = new ActionHandler();
 		loginDialog = new PLoginDialog(actionHandler);
-		loginDialog.setVisible(true);
+		loginDialog.initialize();
 	}
 
 	private void run() {
-		VAccount vAccount = loginDialog.login();
+		vAccount = loginDialog.login();
 		if (vAccount != null) {
-			PMainFrame mainFrame = new PMainFrame(vAccount);
+			mainFrame = new PMainFrame(vAccount, actionHandler);
 			mainFrame.initialize();
 		} else {
 			initialize();
@@ -36,7 +39,14 @@ public class Main {
 	class ActionHandler implements ActionListener {
 
 		public void actionPerformed(ActionEvent e) {
-			run();
+			if (vAccount == null) {
+				run();
+			} else {
+				mainFrame.dispose();
+				vAccount = null;
+				initialize();
+			}
+
 		}
 
 	}

@@ -5,6 +5,7 @@ import java.util.Vector;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import Global.Locale;
 import Service.SLecture;
 import ValueObject.VLecture;
 
@@ -12,19 +13,23 @@ public class PLectureTable extends JTable {
 	private static final long serialVersionUID = 1L;
 
 	public DefaultTableModel tableModel;
-	public Vector<VLecture> vLectures;
+	private Vector<VLecture> vLectures;
 
 	public PLectureTable() {
 
 		Vector<String> header = new Vector<String>();
-		header.add("강좌 번호");
-		header.add("과목");
-		header.add("교수");
-		header.add("학점");
-		header.add("시간");
+		header.add(Locale.LectureTable.LECTURE_ID);
+		header.add(Locale.LectureTable.LECTURE_NAME);
+		header.add(Locale.LectureTable.LECTURE_PROFESSOR);
+		header.add(Locale.LectureTable.LECTURE_CREDIT);
+		header.add(Locale.LectureTable.LECTURE_TIME);
 		tableModel = new DefaultTableModel(header, 0);
 		setModel(tableModel);
 
+	}
+
+	public Vector<VLecture> getVLectures() {
+		return this.vLectures;
 	}
 
 	public void setData(String fileName) {

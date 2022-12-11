@@ -77,32 +77,41 @@ public class PDirectoryPanel extends JPanel {
 	}
 
 	private void upDataTable(Object source) {
+
 		if (source == null) {
 			fileName = "root";
-			fileName = campusTable.setData(fileName);
-			fileName = collegeTable.setData(fileName);
-			fileName = departmentTable.setData(fileName);
-			lectureTable.setData(fileName);
+			campusTable.setData(fileName);
 		} else if (source == campusTable.getSelectionModel()) {
-			fileName = campusTable.getVDirectories().get(campusTable.getSelectedRow()).getFileName();
-			fileName = collegeTable.setData(fileName);
-			fileName = departmentTable.setData(fileName);
-			lectureTable.setData(fileName);
+			upDate(campusTable, collegeTable);
 		} else if (source == collegeTable.getSelectionModel()) {
-			fileName = collegeTable.getVDirectories().get(collegeTable.getSelectedRow()).getFileName();
-			fileName = departmentTable.setData(fileName);
-			lectureTable.setData(fileName);
+			upDate(collegeTable, departmentTable);
 		} else if (source == departmentTable.getSelectionModel()) {
-			fileName = departmentTable.getVDirectories().get(departmentTable.getSelectedRow()).getFileName();
-			lectureTable.setData(fileName);
+			upDate(departmentTable, lectureTable);
 		}
+	}
 
+	public void upDate(PDirectory table1, PDirectory table2) {
+		int selectedIndices[];
+		selectedIndices = table1.getSelectedRows();
+		if (selectedIndices.length > 0) {
+			fileName = table1.getVDirectories().get(selectedIndices[0]).getFileName();
+			table2.setData(fileName);
+		}
+	}
+
+	public void upDate(PDirectory table1, PLectureTable table2) {
+		int selectedIndices[];
+		selectedIndices = table1.getSelectedRows();
+		if (selectedIndices.length > 0) {
+			fileName = table1.getVDirectories().get(selectedIndices[0]).getFileName();
+			table2.setData(fileName);
+		}
 	}
 
 	private class ListSelectionHandler implements ListSelectionListener {
 
 		public void valueChanged(ListSelectionEvent event) {
-			if (event.getValueIsAdjusting()) { // 뭐가 진행되고 있으면 True
+			if (!event.getValueIsAdjusting()) { // 뭐가 진행되고 있으면 True
 				upDataTable(event.getSource());
 			} else {
 			}
@@ -147,27 +156,10 @@ public class PDirectoryPanel extends JPanel {
 
 	}
 
-	public VLecture getSelectedLectures() {
-
-		if (lectureTable.getRowCount() == 0) {
-			return null;
-		}
-
-		Vector<VLecture> lectures = lectureTable.vLectures;
-		int selectedLectureRow = lectureTable.getSelectedRow();
-		VLecture selectedLecture = lectures.get(selectedLectureRow);
-		lectures.remove(selectedLectureRow);
-		((DefaultTableModel) lectureTable.getModel()).removeRow(selectedLectureRow);
-
-		if (lectureTable.getRowCount() != 0) {
-			lectureTable.setRowSelectionInterval(0, 0);
-		}
-
+	public VLecture getSelectedLecture() {
+		Vector<VLecture> lectures = this.lectureTable.getVLectures();
+		VLecture selectedLecture = lectures.get(lectureTable.getSelectedRow());
 		return selectedLecture;
-	}
-
-	public void addLectures(VLecture lectures) {
-
 	}
 
 }

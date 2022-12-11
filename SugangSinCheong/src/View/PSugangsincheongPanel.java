@@ -1,12 +1,13 @@
 package View;
 
+import java.awt.BorderLayout;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 
 import ValueObject.VLecture;
 
@@ -14,72 +15,62 @@ public class PSugangsincheongPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 
 	private PDirectoryPanel directoryPanel;
-	private PControlPanel controlPanel1;
-	private PMiridamgiPanel miridamgiPanel;
-	private PControlPanel controlPanel2;
-	private PSincheongPanel sincheongPanel;
+	private PDetailDialog detailDialog = new PDetailDialog();;
+
+	private JButton miridamgiButton;
+	private JButton sincheongButton;
+	private JButton detailButton;
 
 	public PSugangsincheongPanel() {
 
 		ActionHandler actionHandler = new ActionHandler();
 
-		LayoutManager layoutManager = new BoxLayout(this, BoxLayout.X_AXIS);
+		LayoutManager layoutManager = new BorderLayout();
 		setLayout(layoutManager);
 
 		directoryPanel = new PDirectoryPanel();
 		add(directoryPanel);
 
-		controlPanel1 = new PControlPanel("1", actionHandler);
-		add(controlPanel1);
+		JPanel controlPanel = new JPanel();
+		controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.Y_AXIS));
+		detailButton = new JButton("책가방 / 신청내역");
+		miridamgiButton = new JButton("미리 담기");
+		sincheongButton = new JButton("신청");
 
-		JScrollPane scrollPane = new JScrollPane();
-		miridamgiPanel = new PMiridamgiPanel();
-		scrollPane.setViewportView(miridamgiPanel);
-		add(scrollPane);
+		controlPanel.add(detailButton);
+		controlPanel.add(miridamgiButton);
+		controlPanel.add(sincheongButton);
 
-		controlPanel2 = new PControlPanel("2", actionHandler);
-		add(controlPanel2);
+		detailButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				detailDialog.initialize();
+			}
+		});
+		miridamgiButton.addActionListener(actionHandler);
+		sincheongButton.addActionListener(actionHandler);
 
-		scrollPane = new JScrollPane();
-		sincheongPanel = new PSincheongPanel();
-		scrollPane.setViewportView(sincheongPanel);
-		add(scrollPane);
-	}
+		add(controlPanel, BorderLayout.EAST);
 
-	private void moveFromSincheongToMiridamgi() {
-		VLecture lecture = sincheongPanel.getSelectedLectures();
-		miridamgiPanel.addLectures(lecture);
-	}
-
-	private void moveFromMiridamgiToSincheong() {
-		VLecture lecture = miridamgiPanel.getSelectedLectures();
-		sincheongPanel.addLectures(lecture);
-	}
-
-	private void moveFromMiridamgiToLectures() {
-		VLecture lecture = miridamgiPanel.getSelectedLectures();
-		directoryPanel.addLectures(lecture);
 	}
 
 	private void moveFromLecturesToMiridamgi() {
-		VLecture lecture = directoryPanel.getSelectedLectures();
-		miridamgiPanel.addLectures(lecture);
+		VLecture lecture = directoryPanel.getSelectedLecture();
+		detailDialog.miridamgiPanel.addLecture(lecture);
+	}
+
+	private void moveFromLecturesToSincheong() {
+		VLecture lecture = directoryPanel.getSelectedLecture();
+		detailDialog.sincheongPanel.addLecture(lecture);
 	}
 
 	public class ActionHandler implements ActionListener {
-
-		@Override
 		public void actionPerformed(ActionEvent event) {
-			if (event.getActionCommand().compareTo("1>>") == 0) {
+			if (event.getActionCommand().compareTo("미리 담기") == 0) {
 				moveFromLecturesToMiridamgi();
-			} else if (event.getActionCommand().compareTo("1<<") == 0) {
-				moveFromMiridamgiToLectures();
-			} else if (event.getActionCommand().compareTo("2>>") == 0) {
-				moveFromMiridamgiToSincheong();
-			} else if (event.getActionCommand().compareTo("2<<") == 0) {
-				moveFromSincheongToMiridamgi();
+			} else if (event.getActionCommand().compareTo("신청") == 0) {
+				moveFromLecturesToSincheong();
+				detailDialog.totalCredit.setText("  총 학점 :" + detailDialog.sincheongPanel.getTotalCredit());
 			}
-
 		}
 
 	}
